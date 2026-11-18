@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="UbicaUT — Presentación interactiva de casos de uso, diagrama conceptual y diagramas de clase del campus Santa Helena de la Universidad del Tolima." />
+<title>UbicaUT — Casos de uso · Campus Santa Helena</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --panel: #ffffff;
+    --panel-2: #f1f5f9;
+    --panel-3: #e2e8f0;
+    --line: #cbd5e1;
+    --line-soft: #e2e8f0;
+    --text: #0f172a;
+    --text-soft: #334155;
+    --muted: #64748b;
+    --faint: #94a3b8;
+    --sky: #0284c7;
+    --sky-soft: #38bdf8;
+    --blue: #2563eb;
+    --amber: #d97706;
+    --amber-soft: #f59e0b;
+    --emerald: #059669;
+    --rose: #e11d48;
+    --indigo: #4f46e5;
+    --radius: 14px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: #f8fafc;
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    line-height: 1.55;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button { font: inherit; color: inherit; }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+  ::selection { background: rgba(56, 189, 248, .30); }
+
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; border: 2px solid #f8fafc; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+  .skip-link {
+    position: absolute; left: 12px; top: -60px; z-index: 100;
+    background: var(--sky); color: #06111f; padding: 8px 14px;
+    border-radius: 8px; font-weight: 700; text-decoration: none;
+  }
+  .skip-link:focus { top: 12px; }
+
+  /* ---------- Barra superior ---------- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    padding: 10px 22px; min-height: 66px; flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(12px);
+    z-index: 30;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .brand-mark {
+    width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: #e11d48;
+    box-shadow: 0 4px 12px -4px rgba(225, 29, 72, 0.3);
+    font-size: 13px; font-weight: 700; letter-spacing: .4px; color: #fff;
+  }
+  .brand-copy { min-width: 0; }
+  .brand-title { margin: 0; font-size: 16px; line-height: 1.2; font-weight: 700; letter-spacing: -.2px; white-space: nowrap; }
+  .brand-title span { color: var(--sky); font-weight: 600; }
+  .brand-sub { margin: 2px 0 0; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+
+  .tabs {
+    display: flex; gap: 4px; padding: 4px; border-radius: 12px;
+    background: #e2e8f0; border: 1px solid var(--line);
+    max-width: 100%; overflow-x: auto; scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border: 1px solid transparent; border-radius: 9px;
+    background: transparent; color: var(--muted);
+    font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer;
+    transition: background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .tab .tab-num {
+    width: 19px; height: 19px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 10.5px; font-weight: 700;
+    background: #cbd5e1; color: var(--text-soft);
+    transition: all .2s ease;
+  }
+  .tab:hover { color: var(--text); background: rgba(0,0,0,0.03); }
+  .tab[aria-selected="true"] {
+    background: #ffffff;
+    border-color: var(--line); color: var(--sky);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .tab[aria-selected="true"] .tab-num { background: var(--sky); color: #fff; }
+
+  .topbar-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11.5px; color: var(--muted); flex-shrink: 0;
+  }
+  .topbar-meta .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 8px var(--emerald); }
+  .topbar-meta strong { color: var(--text-soft); font-weight: 600; }
+
+  /* ---------- Estructura principal ---------- */
+  .app-main { flex: 1; min-height: 0; position: relative; }
+  .view {
+    display: none;
+    height: 100%;
+    min-height: 0;
+    transition: opacity 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .view.active {
+    display: flex;
+    opacity: 1;
+  }
+  .view.entering {
+    display: flex;
+    opacity: 0;
+  }
+
+  .sidebar {
+    width: 312px; flex-shrink: 0; min-height: 0;
+    background: #f1f5f9;
+    border-right: 1px solid var(--line);
+    display: flex; flex-direction: column;
+  }
+  .sidebar-head { padding: 16px 16px 12px; border-bottom: 1px solid var(--line-soft); }
+  .eyebrow {
+    margin: 0; font-size: 10.5px; font-weight: 700; letter-spacing: 1.4px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .sidebar-head .eyebrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .count-pill {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0;
+    color: var(--sky-soft); background: rgba(56, 189, 248, .10);
+    border: 1px solid rgba(56, 189, 248, .22);
+    padding: 1px 7px; border-radius: 999px;
+  }
+
+  .filters {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;
+    margin-top: 11px; padding: 4px; border-radius: 10px;
+    background: #cbd5e1; border: 1px solid var(--line);
+  }
+  .filter-btn {
+    border: 1px solid transparent; border-radius: 7px; background: transparent;
+    color: var(--text-soft); padding: 6px 2px; font-size: 11.5px; font-weight: 600;
+    cursor: pointer; transition: all .16s ease;
+  }
+  .filter-btn:hover { color: var(--text); }
+  .filter-btn[aria-pressed="true"] {
+    background: #ffffff; color: var(--sky); border-color: var(--line);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .filter-btn .n { font-family: var(--font-mono); font-size: 10px; color: var(--faint); margin-left: 3px; }
+  .filter-btn[aria-pressed="true"] .n { color: var(--sky); }
+
+  .cu-list {
+    flex: 1; min-height: 0; overflow-y: auto;
+    padding: 8px; display: flex; flex-direction: column; gap: 3px;
+  }
+  .cu-item {
+    --accent: var(--sky);
+    width: 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+    gap: 5px 8px; padding: 9px 10px 10px;
+    background: transparent; border: 1px solid transparent; border-left: 3px solid transparent;
+    border-radius: 9px; text-align: left; cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .cu-item:hover { background: rgba(148, 163, 184, .07); }
+  .cu-item.active {
+    background: linear-gradient(90deg, rgba(30, 58, 138, .55), rgba(30, 58, 138, .16));
+    border-color: rgba(56, 189, 248, .22);
+    border-left-color: var(--accent);
+  }
+  .cu-id { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--accent); letter-spacing: .2px; }
+  .cu-item .badge { grid-column: 3; justify-self: end; }
+  .cu-title { grid-column: 1 / -1; font-size: 13px; font-weight: 500; line-height: 1.35; color: var(--text-soft); }
+  .cu-item.active .cu-title { color: #fff; font-weight: 600; }
+  .badge {
+    font-size: 9px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 5px; border: 1px solid; white-space: nowrap;
+  }
+  .badge.usuario { color: var(--sky-soft); border-color: rgba(56, 189, 248, .3); background: rgba(56, 189, 248, .09); }
+  .badge.admin { color: var(--amber-soft); border-color: rgba(251, 191, 36, .28); background: rgba(251, 191, 36, .08); }
+  .sidebar-foot {
+    padding: 10px 14px; border-top: 1px solid var(--line-soft);
+    font-size: 10.5px; color: var(--faint); line-height: 1.5;
+  }
+  .sidebar-foot kbd {
+    font-family: var(--font-mono); font-size: 9.5px; color: var(--text-soft);
+    background: #f1f5f9; border: 1px solid var(--line); border-bottom-width: 2px;
+    padding: 0 4px; border-radius: 4px;
+  }
+
+  /* ---------- Panel de detalle ---------- */
+  .detail-scroll { flex: 1; min-width: 0; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
+  .detail {
+    max-width: 1040px; margin: 0 auto; padding: 22px 26px 34px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  .card {
+    background: #ffffff;
+    border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+
+  .case-head { padding: 20px 22px 17px; border-top: 2px solid var(--sky); }
+  .case-kicker { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .case-code {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    color: #ffffff; background: var(--sky); padding: 2px 8px; border-radius: 5px;
+    letter-spacing: .3px;
+  }
+  .case-kicker .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--faint); }
+  .case-audience { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+  .case-head h2 { margin: 0 0 7px; font-size: 25px; line-height: 1.2; letter-spacing: -.55px; font-weight: 700; }
+  .case-purpose { margin: 0; color: var(--text-soft); font-size: 14px; max-width: 78ch; }
+
+  .case-meta {
+    display: grid; grid-template-columns: 1.1fr 1.35fr 1fr; gap: 16px;
+    margin-top: 17px; padding-top: 15px; border-top: 1px solid var(--line-soft);
+  }
+  .meta-block { min-width: 0; }
+  .meta-label {
+    display: block; font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px;
+    text-transform: uppercase; color: var(--faint); margin-bottom: 5px;
+  }
+  .meta-strong { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--text); }
+  .meta-note { margin: 2px 0 0; font-size: 11px; color: var(--muted); line-height: 1.4; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+    color: var(--sky-soft); background: rgba(56, 189, 248, .07);
+    border: 1px solid rgba(56, 189, 248, .18);
+    padding: 2px 6px; border-radius: 5px; white-space: nowrap;
+  }
+  .rel-row { display: flex; flex-wrap: wrap; gap: 4px; }
+  .rel-btn {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--text-soft); background: #f1f5f9; border: 1px solid var(--line);
+    padding: 2px 7px; border-radius: 5px; cursor: pointer;
+    transition: all .15s ease;
+  }
+  .rel-btn:hover { color: var(--text); border-color: var(--sky); background: #e0f2fe; }
+
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 13px 18px; border-bottom: 1px solid var(--line);
+    background: #f8fafc;
+  }
+  .card-head h3 { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: -.1px; }
+  .card-head .head-note { font-size: 10.5px; color: var(--muted); }
+  .card-head.amber { background: #fffbeb; }
+  .card-head.amber h3 { color: var(--amber); }
+
+  .flow-table, .alt-table { width: 100%; border-collapse: collapse; }
+  .flow-table th, .alt-table th {
+    padding: 9px 18px; text-align: left;
+    font-size: 9.5px; font-weight: 700; letter-spacing: 1.05px; text-transform: uppercase;
+    color: var(--muted); background: #f8fafc;
+    border-bottom: 1px solid var(--line);
+  }
+  .alt-table th { color: var(--amber); }
+  .flow-table th:first-child, .flow-table td:first-child { border-right: 1px solid var(--line-soft); }
+  .flow-table th:first-child { width: 48%; }
+  .flow-table td, .alt-table td {
+    padding: 11px 18px; vertical-align: top; font-size: 13.5px; line-height: 1.55;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .flow-table tr:last-child td, .alt-table tr:last-child td { border-bottom: none; }
+  .flow-table tbody tr:hover td, .alt-table tbody tr:hover td { background: #f8fafc; }
+  .flow-table tbody tr.auto td { background: rgba(2, 132, 199, .05); }
+  .actor-cell { color: var(--text); }
+  .system-cell { color: var(--text-soft); }
+  .step-line { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+    color: var(--muted); background: #f1f5f9; border: 1px solid var(--line);
+    padding: 0 5px; border-radius: 4px; white-space: nowrap;
+  }
+  .auto-pill {
+    font-size: 8.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+    color: var(--sky-soft); background: rgba(56, 189, 248, .10);
+    border: 1px solid rgba(56, 189, 248, .24); padding: 0 5px; border-radius: 4px;
+  }
+  .alt-table th:first-child { width: 88px; }
+  .alt-table td:first-child { white-space: nowrap; }
+  .paso-chip {
+    display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--amber-soft); background: rgba(251, 191, 36, .08);
+    border: 1px solid rgba(251, 191, 36, .26); padding: 2px 7px; border-radius: 5px;
+  }
+  .alt-table td:last-child { color: var(--text-soft); }
+  .alt-table td .cond { color: var(--amber-soft); font-weight: 600; }
+
+  .empty-state {
+    padding: 18px; font-size: 12.5px; color: var(--muted);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .empty-state .mark {
+    width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
+    display: grid; place-items: center; font-size: 11px; font-weight: 700;
+    border: 1px solid #2e4364; color: var(--muted); background: #16243a;
+  }
+  .doc-note {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 12px 15px; border: 1px solid rgba(56, 189, 248, .18);
+    border-left: 3px solid var(--sky); border-radius: 10px;
+    background: rgba(56, 189, 248, .045);
+    font-size: 12px; color: var(--text-soft); line-height: 1.55;
+  }
+  .doc-note strong { color: var(--sky-soft); font-weight: 600; }
+  .method-note { font-size: 11px; color: var(--faint); padding: 0 4px; line-height: 1.55; }
+
+  /* ---------- Diagramas ---------- */
+  .diagram-sidebar { padding: 0; }
+  .diagram-sidebar .side-block { padding: 16px 14px 12px; border-bottom: 1px solid var(--line-soft); }
+  .diagram-sidebar .side-block .eyebrow { margin-bottom: 10px; }
+  .view-list { display: flex; flex-direction: column; gap: 5px; }
+  .view-btn {
+    position: relative;
+    width: 100%; text-align: left; padding: 8px 11px 8px 13px; border-radius: 9px;
+    background: #ffffff; border: 1px solid var(--line-soft);
+    color: var(--text-soft); font-size: 12px; font-weight: 500; cursor: pointer;
+    line-height: 1.35; box-shadow: 0 1px 1px rgba(15, 23, 42, .03);
+    transition: background .16s ease, border-color .16s ease, color .16s ease,
+                box-shadow .16s ease, transform .16s ease;
+  }
+  .view-btn::before {
+    content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 0; border-radius: 0 3px 3px 0; background: var(--sky);
+    transition: height .18s ease;
+  }
+  .view-btn:hover {
+    border-color: var(--line); color: var(--text); transform: translateX(1px);
+    box-shadow: 0 2px 7px -3px rgba(15, 23, 42, .16);
+  }
+  .view-btn.active {
+    background: linear-gradient(90deg, #e0f2fe, #f8fafc 75%);
+    border-color: rgba(2, 132, 199, .30); color: var(--sky); font-weight: 600;
+    box-shadow: 0 2px 9px -4px rgba(2, 132, 199, .40);
+  }
+  .view-btn.active::before { height: 17px; }
+  .view-btn:focus-visible { outline: 2px solid var(--sky); outline-offset: 1px; }
+  .diagram-note {
+    padding: 14px; flex: 1; overflow-y: auto;
+    font-size: 11.5px; color: var(--text-soft); line-height: 1.55;
+  }
+  .diagram-note .note-box {
+    padding: 12px; border-radius: 10px; border: 1px solid var(--line);
+    background: #ffffff; font-size: 11.5px; color: var(--text-soft); line-height: 1.55;
+  }
+  .diagram-note .note-box .eyebrow { margin-bottom: 5px; color: var(--sky); }
+  .diagram-note .fine { margin: 10px 0 0; font-size: 10.5px; color: var(--faint); line-height: 1.5; }
+
+  .canvas-wrap {
+    flex: 1; min-width: 0; min-height: 0; position: relative; overflow: hidden;
+    background-color: #f1f5f9;
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 22px 22px;
+    touch-action: none;
+  }
+  .canvas-wrap.dragging { cursor: grabbing; }
+  .diagram-svg { display: block; width: 100%; height: 100%; cursor: grab; user-select: none; }
+  .canvas-toolbar {
+    position: absolute; top: 14px; right: 14px; z-index: 5;
+    display: flex; align-items: center; gap: 3px;
+    background: rgba(255, 255, 255, 0.9); border: 1px solid var(--line);
+    padding: 4px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+  }
+  .tool-btn {
+    border: 1px solid transparent; background: #e2e8f0; color: var(--text-soft);
+    border-radius: 7px; padding: 4px 9px; font-size: 11.5px; font-weight: 600;
+    cursor: pointer; transition: all .15s ease; white-space: nowrap;
+  }
+  .tool-btn:hover { background: #cbd5e1; color: var(--text); }
+  .tool-btn.primary { background: var(--sky); color: #fff; }
+  .tool-btn.primary:hover { background: #0369a1; }
+  .zoom-readout {
+    min-width: 48px; text-align: center; font-family: var(--font-mono);
+    font-size: 10.5px; color: var(--muted); padding: 0 4px;
+  }
+  .canvas-hint {
+    position: absolute; left: 14px; bottom: 12px; z-index: 4;
+    font-size: 10px; color: var(--muted); background: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px;
+    pointer-events: none;
+  }
+  .canvas-hint .hint-touch { display: none; }
+  .legend {
+    position: absolute; right: 14px; bottom: 12px; z-index: 4;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 10px; color: var(--muted); background: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px;
+    pointer-events: none;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid #64748b; }
+  .legend i.dashed { border-top-style: dashed; }
+  .legend i.diamond { width: 10px; height: 8px; border: 1px solid var(--sky); background: var(--sky); transform: rotate(45deg); }
+
+  .diagram-svg text { font-family: var(--font-ui); }
+  .entity-card { fill: #ffffff; stroke: var(--line); stroke-width: 1.6; }
+  .entity-title { fill: var(--text); font-size: 15px; font-weight: 700; }
+  .entity-attr { fill: var(--text-soft); font-size: 13.5px; }
+  .entity-attr.muted { fill: var(--muted); font-size: 12px; }
+  .rel-line { stroke: var(--muted); stroke-width: 1.8; fill: none; }
+  .rel-line.dashed { stroke-dasharray: 6 5; }
+  .rel-name { fill: var(--muted); font-size: 11.5px; }
+  .mult { fill: var(--sky); font-size: 11.5px; font-weight: 700; font-family: var(--font-mono); }
+  .mult.amber { fill: var(--amber); }
+  .mult.emerald { fill: var(--emerald); }
+  .mult.indigo { fill: var(--indigo); }
+
+  .uml-card { fill: #ffffff; stroke: var(--line); stroke-width: 1.6; }
+  .uml-title { fill: var(--text); font-size: 13.5px; font-weight: 700; }
+  .uml-attr { fill: var(--text-soft); font-size: 13px; font-family: var(--font-mono); }
+  .uml-method { fill: var(--sky); font-size: 13px; font-family: var(--font-mono); }
+  .uml-sep { stroke: var(--line); stroke-width: 1; }
+  .uml-rel-name { fill: var(--muted); font-size: 11px; }
+  .uml-mult { fill: var(--muted); font-size: 11px; font-weight: 600; font-family: var(--font-mono); }
+
+  /* ---------- Pie ---------- */
+  .app-footer {
+    flex-shrink: 0; min-height: 42px; z-index: 30;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 7px 20px; border-top: 1px solid var(--line);
+    background: #ffffff; font-size: 10.5px; color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .authors { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+  .authors strong { color: var(--text-soft); font-weight: 500; }
+  .authors .sep { color: #cbd5e1; }
+  .shortcuts { display: flex; align-items: center; gap: 6px; }
+  .shortcuts kbd {
+    font-family: var(--font-mono); font-size: 9px; color: var(--text-soft);
+    background: #f1f5f9; border: 1px solid var(--line); border-bottom-width: 2px;
+    padding: 0 4px; border-radius: 4px;
+  }
+  .nav-arrows { display: flex; gap: 5px; }
+  .nav-btn {
+    background: #f1f5f9; border: 1px solid var(--line); color: var(--text-soft);
+    padding: 3px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 500;
+    cursor: pointer; transition: all .15s ease; white-space: nowrap;
+  }
+  .nav-btn:hover { background: #e2e8f0; color: var(--text); border-color: #cbd5e1; }
+  .nav-btn:disabled { opacity: .4; cursor: default; }
+  .nav-arrows[hidden] { display: none; }
+
+  /* ---------- Adaptación ---------- */
+  @media (max-width: 1180px) {
+    .sidebar { width: 282px; }
+    .detail { padding: 18px 20px 30px; }
+    .case-head h2 { font-size: 23px; }
+    .topbar-meta { display: none; }
+  }
+  @media (max-width: 980px) {
+    .case-meta { grid-template-columns: 1fr 1.2fr; }
+    .case-meta .meta-block:last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 860px) {
+    .topbar { flex-wrap: wrap; padding: 10px 14px; gap: 9px; }
+    .tabs { order: 3; width: 100%; }
+    .tab { flex: 1; justify-content: center; padding: 7px 8px; font-size: 12px; }
+    .view.active { flex-direction: column; }
+    .sidebar { width: 100%; max-height: 44vh; border-right: none; border-bottom: 1px solid var(--line); }
+    .sidebar-head { padding: 10px 12px 8px; }
+    .cu-list { flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 7px; gap: 5px; }
+    .cu-item { flex: 0 0 218px; border-left: 1px solid transparent; border-bottom: 3px solid transparent; }
+    .cu-item.active { border-left-color: transparent; border-bottom-color: var(--accent); }
+    .sidebar-foot { display: none; }
+    .detail-scroll { min-height: 0; }
+    .detail { padding: 15px 14px 26px; }
+    .diagram-sidebar { max-height: none; }
+    .diagram-sidebar .side-block { padding: 10px 12px; }
+    .view-list { flex-direction: row; overflow-x: auto; gap: 6px; padding-bottom: 2px; }
+    .view-btn { flex: 0 0 auto; width: auto; white-space: nowrap; padding: 7px 12px; border-radius: 999px; transform: none; }
+    .view-btn::before { display: none; }
+    .view-btn:hover { transform: none; }
+    .view-btn.active { background: var(--sky); border-color: var(--sky); color: #fff; }
+    .diagram-note { display: none; }
+    .canvas-wrap { min-height: 58vh; }
+    .canvas-hint .hint-desktop { display: none; }
+    .canvas-hint .hint-touch { display: inline; }
+    .app-footer .shortcuts { display: none; }
+  }
+  @media (max-width: 640px) {
+    body { font-size: 14px; }
+    .brand-title { font-size: 14.5px; }
+    .brand-sub { display: none; }
+    .brand-mark { width: 34px; height: 34px; border-radius: 9px; }
+    .tab { font-size: 11px; gap: 5px; }
+    .tab .tab-num { display: none; }
+    .filters { margin-top: 8px; }
+    .case-head { padding: 16px 15px 14px; }
+    .case-head h2 { font-size: 21px; }
+    .case-meta { grid-template-columns: 1fr; gap: 12px; }
+    .case-meta .meta-block:last-child { grid-column: auto; }
+    .card-head { padding: 11px 14px; }
+    .flow-table th, .alt-table th { padding: 8px 12px; }
+    .flow-table td, .alt-table td { padding: 10px 12px; font-size: 13px; }
+    .flow-table thead, .alt-table thead { display: none; }
+    .flow-table, .alt-table, .flow-table tbody, .alt-table tbody, .flow-table tr, .alt-table tr, .flow-table td, .alt-table td { display: block; width: 100%; }
+    .flow-table tr, .alt-table tr { border-bottom: 1px solid var(--line); padding: 4px 0; }
+    .flow-table tr:last-child, .alt-table tr:last-child { border-bottom: none; }
+    .flow-table td, .alt-table td { border-bottom: none; padding: 7px 12px; }
+    .flow-table td:first-child { border-right: none; padding-bottom: 3px; }
+    .flow-table td:first-child::before { content: "Evento del actor"; display: block; font-size: 8.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
+    .flow-table td:last-child::before { content: "Respuesta del sistema"; display: block; font-size: 8.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--sky-soft); margin-bottom: 3px; }
+    .alt-table td:first-child { padding-bottom: 2px; }
+    .alt-table td:last-child::before { content: "Condición y respuesta"; display: block; font-size: 8.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--amber-soft); margin-bottom: 3px; }
+    .canvas-toolbar { top: 8px; right: 8px; }
+    .legend { display: none; }
+    .canvas-hint { left: 8px; bottom: 8px; font-size: 9px; padding: 2px 6px; }
+    .app-footer { padding: 6px 10px; font-size: 9.5px; }
+    .authors .sep { display: none; }
+    .authors { gap: 2px 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">UT</div>
+    <div class="brand-copy">
+      <h1 class="brand-title">UbicaUT <span>— Campus Santa Helena</span></h1>
+      <p class="brand-sub">Ingeniería de Software · Análisis y Diseño · Universidad del Tolima</p>
+    </div>
+  </div>
+
+  <nav class="tabs" role="tablist" aria-label="Secciones de la presentación">
+    <button class="tab" type="button" role="tab" id="tab-eventos" aria-controls="view-eventos" aria-selected="true" data-tab="eventos">
+      <span class="tab-num">1</span> Flujo de eventos
+    </button>
+    <button class="tab" type="button" role="tab" id="tab-conceptual" aria-controls="view-conceptual" aria-selected="false" tabindex="-1" data-tab="conceptual">
+      <span class="tab-num">2</span> Diagrama conceptual
+    </button>
+    <button class="tab" type="button" role="tab" id="tab-clases" aria-controls="view-clases" aria-selected="false" tabindex="-1" data-tab="clases">
+      <span class="tab-num">3</span> Diagramas de clase
+    </button>
+  </nav>
+
+  <div class="topbar-meta" aria-hidden="true">
+    <span class="dot"></span>
+    <span><strong>11</strong> casos · <strong>3</strong> actores</span>
+  </div>
+</header>
+
+<main class="app-main" id="main-content">
+  <!-- ============ 1. FLUJO DE EVENTOS ============ -->
+  <section class="view active" id="view-eventos" role="tabpanel" aria-labelledby="tab-eventos">
+    <aside class="sidebar" aria-label="Lista de casos de uso">
+      <div class="sidebar-head">
+        <p class="eyebrow"><span>Casos de uso</span><span class="count-pill" id="filter-count">11 / 11</span></p>
+        <div class="filters" role="group" aria-label="Filtrar casos por actor">
+          <button class="filter-btn" type="button" data-filter="todos" aria-pressed="true">Todos <span class="n">11</span></button>
+          <button class="filter-btn" type="button" data-filter="usuario" aria-pressed="false">Usuario <span class="n">5</span></button>
+          <button class="filter-btn" type="button" data-filter="admin" aria-pressed="false">Admin <span class="n">6</span></button>
+        </div>
+      </div>
+      <div class="cu-list" id="cu-list" role="listbox" aria-label="Casos de uso disponibles"></div>
+      <div class="sidebar-foot">
+        <kbd>←</kbd> <kbd>→</kbd> recorren solo los casos visibles con el filtro activo.
+      </div>
+    </aside>
+    <div class="detail-scroll" id="detail-scroll">
+      <div class="detail" id="cu-detail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ============ 2. DIAGRAMA CONCEPTUAL ============ -->
+  <section class="view" id="view-conceptual" role="tabpanel" aria-labelledby="tab-conceptual" hidden>
+    <aside class="sidebar diagram-sidebar" aria-label="Vistas del diagrama conceptual">
+      <div class="side-block">
+        <p class="eyebrow">Enfoque del dominio</p>
+        <div class="view-list" id="menu-conceptual" role="group" aria-label="Vistas del diagrama conceptual"></div>
+      </div>
+      <div class="diagram-note" id="desc-conceptual"></div>
+    </aside>
+    <div class="canvas-wrap" id="canvas-conceptual">
+      <div class="canvas-toolbar" role="group" aria-label="Controles del diagrama conceptual">
+        <button class="tool-btn" type="button" data-zoom="out" data-diagram="conceptual" aria-label="Reducir zoom">−</button>
+        <span class="zoom-readout" id="zoom-conceptual">100%</span>
+        <button class="tool-btn" type="button" data-zoom="in" data-diagram="conceptual" aria-label="Aumentar zoom">+</button>
+        <button class="tool-btn primary" type="button" data-zoom="reset" data-diagram="conceptual">Centrar</button>
+      </div>
+      <svg id="svg-conceptual" class="diagram-svg" role="img" aria-labelledby="svg-c-title svg-c-desc">
+  <title id="svg-c-title">Diagrama conceptual de UbicaUT</title>
+  <desc id="svg-c-desc">Diez entidades conceptuales: Bloque, Piso, Entrada, Lugar, Ruta, Tramo, Aviso, Usuario, Favorito y PaqueteOffline, con sus relaciones y multiplicidades.</desc>
+  <g id="group-conceptual">
+
+    <!-- Relaciones -->
+    <line class="rel-line" x1="290" y1="100" x2="390" y2="100" />
+    <text class="mult" x="296" y="92">1</text>
+    <text class="rel-name" x="318" y="92">contiene</text>
+    <text class="mult" x="386" y="92" text-anchor="end">1..*</text>
+
+    <line class="rel-line" x1="165" y1="180" x2="165" y2="260" />
+    <text class="mult" x="173" y="194">1</text>
+    <text class="rel-name" x="173" y="221">posee</text>
+    <text class="mult" x="173" y="250">1..*</text>
+
+    <line class="rel-line" x1="510" y1="158" x2="510" y2="260" />
+    <text class="mult" x="518" y="174">1</text>
+    <text class="rel-name" x="518" y="203">aloja</text>
+    <text class="mult" x="518" y="248">0..*</text>
+
+    <path class="rel-line" d="M 660 320 H 715 V 110 H 760" />
+    <text class="mult" x="668" y="312">1</text>
+    <text class="rel-name" x="715" y="250" text-anchor="middle" transform="rotate(-90 715 250)">destino de</text>
+    <text class="mult" x="768" y="132">0..*</text>
+
+    <line class="rel-line" x1="885" y1="180" x2="885" y2="260" />
+    <text class="mult" x="893" y="198">1..*</text>
+    <text class="rel-name" x="893" y="224">compuesta por</text>
+    <text class="mult" x="893" y="252">1..*</text>
+
+    <line class="rel-line" x1="1010" y1="350" x2="1110" y2="350" />
+    <text class="mult amber" x="1018" y="342">0..*</text>
+    <text class="rel-name" x="1046" y="342">afecta</text>
+    <text class="mult amber" x="1104" y="342" text-anchor="end">0..*</text>
+
+    <path class="rel-line dashed" d="M 1250 450 V 515 H 620 V 490" />
+    <text class="mult amber" x="1258" y="468">0..*</text>
+    <text class="mult amber" x="628" y="506">0..*</text>
+    <text class="rel-name" x="1000" y="507" text-anchor="middle">afecta evento o cierre</text>
+
+    <line class="rel-line" x1="290" y1="620" x2="390" y2="620" />
+    <text class="mult emerald" x="296" y="612">1</text>
+    <text class="rel-name" x="320" y="612">guarda</text>
+    <text class="mult emerald" x="386" y="612" text-anchor="end">0..*</text>
+
+    <line class="rel-line" x1="525" y1="560" x2="525" y2="490" />
+    <text class="mult emerald" x="505" y="542" text-anchor="end">0..*</text>
+    <text class="mult emerald" x="505" y="506" text-anchor="end">1</text>
+
+    <path class="rel-line" d="M 760 610 H 700 V 530 H 580 V 490" />
+    <text class="mult emerald" x="734" y="602">1</text>
+    <text class="rel-name" x="645" y="545" text-anchor="middle">empaqueta</text>
+    <text class="mult emerald" x="588" y="508">1..*</text>
+
+    <line class="rel-line" x1="885" y1="540" x2="885" y2="440" />
+    <text class="mult emerald" x="893" y="528">1</text>
+    <text class="rel-name" x="893" y="502">incluye</text>
+    <text class="mult emerald" x="893" y="458">1..*</text>
+
+    <!-- Bloque -->
+    <g transform="translate(40,40)">
+      <rect class="entity-card" width="250" height="140" rx="9" stroke="#38bdf8" />
+      <path d="M0 9a9 9 0 0 1 9-9h232a9 9 0 0 1 9 9v25H0z" fill="#38bdf8" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">Bloque</text>
+      <line x1="0" y1="34" x2="250" y2="34" stroke="#38bdf8" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• nombre</text>
+      <text class="entity-attr" x="14" y="80">• codigo</text>
+      <text class="entity-attr" x="14" y="104">• perimetro</text>
+    </g>
+
+    <!-- Piso -->
+    <g transform="translate(390,40)">
+      <rect class="entity-card" width="240" height="118" rx="9" stroke="#38bdf8" />
+      <path d="M0 9a9 9 0 0 1 9-9h222a9 9 0 0 1 9 9v25H0z" fill="#38bdf8" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">Piso</text>
+      <line x1="0" y1="34" x2="240" y2="34" stroke="#38bdf8" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• numero</text>
+      <text class="entity-attr" x="14" y="80">• plano</text>
+    </g>
+
+    <!-- Entrada -->
+    <g transform="translate(40,260)">
+      <rect class="entity-card" width="250" height="140" rx="9" stroke="#38bdf8" />
+      <path d="M0 9a9 9 0 0 1 9-9h232a9 9 0 0 1 9 9v25H0z" fill="#38bdf8" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">Entrada</text>
+      <line x1="0" y1="34" x2="250" y2="34" stroke="#38bdf8" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• nombre</text>
+      <text class="entity-attr" x="14" y="80">• coordenada</text>
+      <text class="entity-attr" x="14" y="104">• codigoQR</text>
+    </g>
+
+    <!-- Lugar -->
+    <g transform="translate(390,260)">
+      <rect class="entity-card" width="270" height="230" rx="9" stroke="#38bdf8" />
+      <path d="M0 9a9 9 0 0 1 9-9h252a9 9 0 0 1 9 9v25H0z" fill="#38bdf8" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">Lugar</text>
+      <line x1="0" y1="34" x2="270" y2="34" stroke="#38bdf8" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• nombre</text>
+      <text class="entity-attr" x="14" y="78">• codigo</text>
+      <text class="entity-attr" x="14" y="100">• categoria</text>
+      <text class="entity-attr" x="14" y="122">• horario</text>
+      <text class="entity-attr" x="14" y="144">• descripcion</text>
+      <text class="entity-attr" x="14" y="166">• foto</text>
+      <text class="entity-attr" x="14" y="188">• dependenciaResponsable</text>
+      <text class="entity-attr" x="14" y="210">• coordenada</text>
+    </g>
+
+    <!-- Ruta -->
+    <g transform="translate(760,40)">
+      <rect class="entity-card" width="250" height="140" rx="9" stroke="#818cf8" />
+      <path d="M0 9a9 9 0 0 1 9-9h232a9 9 0 0 1 9 9v25H0z" fill="#818cf8" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">Ruta</text>
+      <line x1="0" y1="34" x2="250" y2="34" stroke="#818cf8" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• distanciaTotal</text>
+      <text class="entity-attr" x="14" y="80">• tiempoEstimado</text>
+      <text class="entity-attr" x="14" y="104">• esAccesible</text>
+    </g>
+
+    <!-- Tramo -->
+    <g transform="translate(760,260)">
+      <rect class="entity-card" width="250" height="180" rx="9" stroke="#818cf8" />
+      <path d="M0 9a9 9 0 0 1 9-9h232a9 9 0 0 1 9 9v25H0z" fill="#818cf8" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">Tramo</text>
+      <line x1="0" y1="34" x2="250" y2="34" stroke="#818cf8" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• longitud</text>
+      <text class="entity-attr" x="14" y="78">• tipoSuperficie</text>
+      <text class="entity-attr" x="14" y="100">• tieneEscaleras</text>
+      <text class="entity-attr" x="14" y="122">• tieneRampa</text>
+      <text class="entity-attr" x="14" y="144">• estadoVial</text>
+    </g>
+
+    <!-- Aviso -->
+    <g transform="translate(1110,260)">
+      <rect class="entity-card" width="280" height="190" rx="9" stroke="#fbbf24" />
+      <path d="M0 9a9 9 0 0 1 9-9h262a9 9 0 0 1 9 9v25H0z" fill="#fbbf24" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">Aviso</text>
+      <line x1="0" y1="34" x2="280" y2="34" stroke="#fbbf24" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• titulo</text>
+      <text class="entity-attr" x="14" y="78">• tipo: Evento, Obra o Cierre</text>
+      <text class="entity-attr" x="14" y="100">• descripcion</text>
+      <text class="entity-attr" x="14" y="122">• fechaInicio</text>
+      <text class="entity-attr" x="14" y="144">• fechaFin</text>
+    </g>
+
+    <!-- Usuario -->
+    <g transform="translate(40,550)">
+      <rect class="entity-card" width="250" height="140" rx="9" stroke="#34d399" />
+      <path d="M0 9a9 9 0 0 1 9-9h232a9 9 0 0 1 9 9v25H0z" fill="#34d399" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">Usuario</text>
+      <line x1="0" y1="34" x2="250" y2="34" stroke="#34d399" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• correoInstitucional</text>
+      <text class="entity-attr" x="14" y="80">• rol</text>
+      <text class="entity-attr" x="14" y="104">• fechaCreacion</text>
+    </g>
+
+    <!-- Favorito -->
+    <g transform="translate(390,560)">
+      <rect class="entity-card" width="270" height="120" rx="9" stroke="#34d399" />
+      <path d="M0 9a9 9 0 0 1 9-9h252a9 9 0 0 1 9 9v25H0z" fill="#34d399" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">Favorito</text>
+      <line x1="0" y1="34" x2="270" y2="34" stroke="#34d399" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• fechaAgregado</text>
+      <text class="entity-attr muted" x="14" y="80">asocia Usuario y Lugar</text>
+    </g>
+
+    <!-- PaqueteOffline -->
+    <g transform="translate(760,540)">
+      <rect class="entity-card" width="250" height="140" rx="9" stroke="#34d399" />
+      <path d="M0 9a9 9 0 0 1 9-9h232a9 9 0 0 1 9 9v25H0z" fill="#34d399" />
+      <text class="entity-title" x="14" y="23" fill="#ffffff">PaqueteOffline</text>
+      <line x1="0" y1="34" x2="250" y2="34" stroke="#34d399" opacity=".45" />
+      <text class="entity-attr" x="14" y="56">• version</text>
+      <text class="entity-attr" x="14" y="80">• fechaGeneracion</text>
+      <text class="entity-attr" x="14" y="104">• tamano</text>
+    </g>
+
+  </g>
+</svg>
+      <div class="canvas-hint"><span class="hint-desktop">Arrastra para mover · Rueda para acercar</span><span class="hint-touch">Arrastra para mover · Botones + / − para acercar</span></div>
+      <div class="legend" aria-hidden="true">
+        <span><i></i> relación</span>
+        <span><i class="dashed"></i> discontinua</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. DIAGRAMAS DE CLASE ============ -->
+  <section class="view" id="view-clases" role="tabpanel" aria-labelledby="tab-clases" hidden>
+    <aside class="sidebar diagram-sidebar" aria-label="Vistas del diagrama de clases">
+      <div class="side-block">
+        <p class="eyebrow">Inspeccionar clases</p>
+        <div class="view-list" id="menu-clases" role="group" aria-label="Vistas del diagrama de clases"></div>
+      </div>
+      <div class="diagram-note" id="desc-clases"></div>
+    </aside>
+    <div class="canvas-wrap" id="canvas-clases">
+      <div class="canvas-toolbar" role="group" aria-label="Controles del diagrama de clases">
+        <button class="tool-btn" type="button" data-zoom="out" data-diagram="clases" aria-label="Reducir zoom">−</button>
+        <span class="zoom-readout" id="zoom-clases">100%</span>
+        <button class="tool-btn" type="button" data-zoom="in" data-diagram="clases" aria-label="Aumentar zoom">+</button>
+        <button class="tool-btn primary" type="button" data-zoom="reset" data-diagram="clases">Centrar</button>
+      </div>
+      <svg id="svg-clases" class="diagram-svg" role="img" aria-labelledby="svg-k-title svg-k-desc">
+  <title id="svg-k-title">Diagrama de clases de UbicaUT</title>
+  <desc id="svg-k-desc">Diez clases con atributos, métodos y relaciones: Bloque, Lugar, Ruta, Tramo, Aviso, Usuario, Favorito, PaqueteOffline, Informe y GestorRespaldo. Informe y GestorRespaldo dependen de Usuario mediante «use».</desc>
+  <defs>
+    <marker id="diamond-sky" viewBox="0 0 16 10" refX="0" refY="5" markerWidth="9" markerHeight="8" orient="auto">
+      <path d="M0 5 L8 0 L16 5 L8 10 Z" fill="#38bdf8" />
+    </marker>
+    <marker id="diamond-indigo" viewBox="0 0 16 10" refX="0" refY="5" markerWidth="9" markerHeight="8" orient="auto">
+      <path d="M0 5 L8 0 L16 5 L8 10 Z" fill="#818cf8" />
+    </marker>
+    <marker id="arrow-slate" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 1 L10 5 L0 9" fill="none" stroke="#94a3b8" stroke-width="1.4" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 1 L10 5 L0 9" fill="none" stroke="#fbbf24" stroke-width="1.4" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 1 L10 5 L0 9" fill="none" stroke="#34d399" stroke-width="1.4" />
+    </marker>
+  </defs>
+  <g id="group-clases">
+
+    <!-- Relaciones -->
+    <line x1="300" y1="110" x2="360" y2="110" stroke="#38bdf8" stroke-width="1.8" marker-start="url(#diamond-sky)" />
+    <text class="uml-rel-name" x="330" y="100" text-anchor="middle">contiene</text>
+    <text class="uml-mult" x="304" y="127">1</text>
+    <text class="uml-mult" x="356" y="127" text-anchor="end">1..*</text>
+
+    <line x1="730" y1="110" x2="670" y2="110" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow-slate)" />
+    <text class="uml-rel-name" x="700" y="100" text-anchor="middle">destino</text>
+    <text class="uml-mult" x="726" y="127" text-anchor="end">0..*</text>
+    <text class="uml-mult" x="676" y="127">1</text>
+
+    <line x1="885" y1="235" x2="885" y2="310" stroke="#818cf8" stroke-width="1.8" marker-start="url(#diamond-indigo)" />
+    <text class="uml-rel-name" x="893" y="270">compone</text>
+    <text class="uml-mult" x="868" y="253" text-anchor="end">1</text>
+    <text class="uml-mult" x="893" y="304">1..*</text>
+
+    <path d="M1100 120 H1070 V400 H1040" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arrow-amber)" />
+    <text class="uml-mult" x="1108" y="112">0..*</text>
+    <text class="uml-mult" x="1032" y="393" text-anchor="end">0..*</text>
+    <text class="uml-rel-name" x="1070" y="255" text-anchor="middle" transform="rotate(-90 1070 255)">afecta</text>
+
+    <line x1="300" y1="400" x2="360" y2="400" stroke="#34d399" stroke-width="1.8" />
+    <text class="uml-rel-name" x="330" y="390" text-anchor="middle">guarda</text>
+    <text class="uml-mult" x="304" y="417">1</text>
+    <text class="uml-mult" x="356" y="417" text-anchor="end">0..*</text>
+
+    <line x1="515" y1="310" x2="515" y2="270" stroke="#34d399" stroke-width="1.8" marker-end="url(#arrow-emerald)" />
+    <text class="uml-rel-name" x="523" y="294">referencia</text>
+    <text class="uml-mult" x="495" y="305" text-anchor="end">0..*</text>
+    <text class="uml-mult" x="495" y="284" text-anchor="end">1</text>
+
+    <path d="M670 600 H690 V285 H640 V270" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="6 5" />
+    <text class="uml-mult" x="676" y="592">1</text>
+    <text class="uml-mult" x="652" y="300">1..*</text>
+    <text class="uml-rel-name" x="698" y="440" text-anchor="middle" transform="rotate(-90 698 440)">empaqueta</text>
+
+    <!-- Dependencias «use» de las clases de servicio -->
+    <line x1="165" y1="560" x2="165" y2="490" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#arrow-slate)" />
+    <text class="uml-rel-name" x="173" y="518">«use»</text>
+    <text class="uml-rel-name" x="173" y="532">registros de uso</text>
+
+    <path d="M885 560 V540 H285 V490" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#arrow-slate)" />
+    <text class="uml-rel-name" x="740" y="514">«use»</text>
+    <text class="uml-rel-name" x="740" y="528">datos y registros</text>
+
+    <!-- Bloque -->
+    <g transform="translate(30,30)">
+      <rect class="uml-card" width="270" height="180" rx="8" stroke="#38bdf8" />
+      <path d="M0 8a8 8 0 0 1 8-8h254a8 8 0 0 1 8 8v22H0z" fill="#38bdf8" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">Bloque</text>
+      <line x1="0" y1="30" x2="270" y2="30" stroke="#38bdf8" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- id: UUID</text>
+      <text class="uml-attr" x="12" y="66">- codigo: String</text>
+      <text class="uml-attr" x="12" y="84">- nombre: String</text>
+      <text class="uml-attr" x="12" y="102">- perimetro: Poligono</text>
+      <line class="uml-sep" x1="0" y1="112" x2="270" y2="112" />
+      <text class="uml-method" x="12" y="130">+ contienePunto(c: Coord): bool</text>
+      <text class="uml-method" x="12" y="148">+ obtenerPisos(): List&lt;Piso&gt;</text>
+      <text class="uml-method" x="12" y="166">+ generarQREntrada(): Image</text>
+    </g>
+
+    <!-- Lugar -->
+    <g transform="translate(360,30)">
+      <rect class="uml-card" width="310" height="240" rx="8" stroke="#38bdf8" />
+      <path d="M0 8a8 8 0 0 1 8-8h294a8 8 0 0 1 8 8v22H0z" fill="#38bdf8" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">Lugar</text>
+      <line x1="0" y1="30" x2="310" y2="30" stroke="#38bdf8" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- id: UUID</text>
+      <text class="uml-attr" x="12" y="67">- codigo: String</text>
+      <text class="uml-attr" x="12" y="86">- nombre: String</text>
+      <text class="uml-attr" x="12" y="105">- categoria: CategoriaLugar</text>
+      <text class="uml-attr" x="12" y="124">- horario: String</text>
+      <text class="uml-attr" x="12" y="143">- coordenada: Coordenada</text>
+      <line class="uml-sep" x1="0" y1="153" x2="310" y2="153" />
+      <text class="uml-method" x="12" y="172">+ buscarPorTexto(q: String): List</text>
+      <text class="uml-method" x="12" y="190">+ validarCoordenadasCampus(): bool</text>
+      <text class="uml-method" x="12" y="208">+ obtenerFicha(): FichaLugar</text>
+      <text class="uml-method" x="12" y="226">+ guardar(): void</text>
+    </g>
+
+    <!-- Ruta -->
+    <g transform="translate(730,30)">
+      <rect class="uml-card" width="310" height="205" rx="8" stroke="#818cf8" />
+      <path d="M0 8a8 8 0 0 1 8-8h294a8 8 0 0 1 8 8v22H0z" fill="#818cf8" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">Ruta</text>
+      <line x1="0" y1="30" x2="310" y2="30" stroke="#818cf8" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- origen: Coordenada</text>
+      <text class="uml-attr" x="12" y="67">- destino: Lugar</text>
+      <text class="uml-attr" x="12" y="86">- distanciaMetros: Double</text>
+      <text class="uml-attr" x="12" y="105">- tiempoMinutos: Integer</text>
+      <text class="uml-attr" x="12" y="124">- accesible: Boolean</text>
+      <line class="uml-sep" x1="0" y1="134" x2="310" y2="134" />
+      <text class="uml-method" x="12" y="153">+ calcularRutaOptima(): Ruta</text>
+      <text class="uml-method" x="12" y="171">+ recalcularSiSeAleja(): Ruta</text>
+      <text class="uml-method" x="12" y="189">+ generarIndicacionesVoz(): List</text>
+    </g>
+
+    <!-- Aviso -->
+    <g transform="translate(1100,30)">
+      <rect class="uml-card" width="290" height="205" rx="8" stroke="#fbbf24" />
+      <path d="M0 8a8 8 0 0 1 8-8h274a8 8 0 0 1 8 8v22H0z" fill="#fbbf24" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">Aviso</text>
+      <line x1="0" y1="30" x2="290" y2="30" stroke="#fbbf24" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- id: UUID</text>
+      <text class="uml-attr" x="12" y="67">- titulo: String</text>
+      <text class="uml-attr" x="12" y="86">- tipo: TipoAviso</text>
+      <text class="uml-attr" x="12" y="105">- fechaInicio: LocalDateTime</text>
+      <text class="uml-attr" x="12" y="124">- fechaFin: LocalDateTime</text>
+      <line class="uml-sep" x1="0" y1="134" x2="290" y2="134" />
+      <text class="uml-method" x="12" y="153">+ estaVigente(): Boolean</text>
+      <text class="uml-method" x="12" y="171">+ afectarTramos(): void</text>
+      <text class="uml-method" x="12" y="189">+ programarVigencia(): void</text>
+    </g>
+
+    <!-- Usuario -->
+    <g transform="translate(30,310)">
+      <rect class="uml-card" width="270" height="180" rx="8" stroke="#34d399" />
+      <path d="M0 8a8 8 0 0 1 8-8h254a8 8 0 0 1 8 8v22H0z" fill="#34d399" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">Usuario</text>
+      <line x1="0" y1="30" x2="270" y2="30" stroke="#34d399" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- id: UUID</text>
+      <text class="uml-attr" x="12" y="66">- correoInstitucional: String</text>
+      <text class="uml-attr" x="12" y="84">- contrasenaHash: String</text>
+      <text class="uml-attr" x="12" y="102">- rol: RolUsuario</text>
+      <line class="uml-sep" x1="0" y1="112" x2="270" y2="112" />
+      <text class="uml-method" x="12" y="130">+ iniciarSesion(): Boolean</text>
+      <text class="uml-method" x="12" y="148">+ cambiarRol(r: Rol): void</text>
+      <text class="uml-method" x="12" y="166">+ eliminarDatosPersonales(): void</text>
+    </g>
+
+    <!-- Favorito -->
+    <g transform="translate(360,310)">
+      <rect class="uml-card" width="310" height="165" rx="8" stroke="#34d399" />
+      <path d="M0 8a8 8 0 0 1 8-8h294a8 8 0 0 1 8 8v22H0z" fill="#34d399" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">Favorito</text>
+      <line x1="0" y1="30" x2="310" y2="30" stroke="#34d399" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- usuarioId: UUID</text>
+      <text class="uml-attr" x="12" y="66">- lugarId: UUID</text>
+      <text class="uml-attr" x="12" y="84">- fechaAgregado: LocalDateTime</text>
+      <line class="uml-sep" x1="0" y1="94" x2="310" y2="94" />
+      <text class="uml-method" x="12" y="112">+ agregarFavorito(): void</text>
+      <text class="uml-method" x="12" y="130">+ eliminarFavorito(): void</text>
+      <text class="uml-method" x="12" y="148">+ listarPorUsuario(): List</text>
+    </g>
+
+    <!-- Tramo -->
+    <g transform="translate(730,310)">
+      <rect class="uml-card" width="310" height="185" rx="8" stroke="#818cf8" />
+      <path d="M0 8a8 8 0 0 1 8-8h294a8 8 0 0 1 8 8v22H0z" fill="#818cf8" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">Tramo</text>
+      <line x1="0" y1="30" x2="310" y2="30" stroke="#818cf8" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- id: UUID</text>
+      <text class="uml-attr" x="12" y="67">- longitudMetros: Double</text>
+      <text class="uml-attr" x="12" y="86">- tieneEscaleras: Boolean</text>
+      <text class="uml-attr" x="12" y="105">- tieneRampa: Boolean</text>
+      <text class="uml-attr" x="12" y="124">- habilitado: Boolean</text>
+      <line class="uml-sep" x1="0" y1="134" x2="310" y2="134" />
+      <text class="uml-method" x="12" y="153">+ esTransitable(acc: bool): bool</text>
+      <text class="uml-method" x="12" y="171">+ cambiarEstado(hab: bool): void</text>
+    </g>
+
+    <!-- PaqueteOffline -->
+    <g transform="translate(360,560)">
+      <rect class="uml-card" width="310" height="165" rx="8" stroke="#38bdf8" />
+      <path d="M0 8a8 8 0 0 1 8-8h294a8 8 0 0 1 8 8v22H0z" fill="#38bdf8" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">PaqueteOffline</text>
+      <line x1="0" y1="30" x2="310" y2="30" stroke="#38bdf8" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- version: String</text>
+      <text class="uml-attr" x="12" y="66">- fechaGeneracion: LocalDateTime</text>
+      <text class="uml-attr" x="12" y="84">- tamanoMb: Double</text>
+      <line class="uml-sep" x1="0" y1="94" x2="310" y2="94" />
+      <text class="uml-method" x="12" y="112">+ descargarPaquete(): void</text>
+      <text class="uml-method" x="12" y="130">+ verificarConexion(): Boolean</text>
+      <text class="uml-method" x="12" y="148">+ consultarLocal(): List</text>
+    </g>
+
+    <!-- Informe -->
+    <g transform="translate(30,560)">
+      <rect class="uml-card" width="270" height="165" rx="8" stroke="#fb7185" />
+      <path d="M0 8a8 8 0 0 1 8-8h254a8 8 0 0 1 8 8v22H0z" fill="#fb7185" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">Informe</text>
+      <line x1="0" y1="30" x2="270" y2="30" stroke="#fb7185" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- tipo: TipoInforme</text>
+      <text class="uml-attr" x="12" y="66">- fechaInicio: LocalDate</text>
+      <text class="uml-attr" x="12" y="84">- fechaFin: LocalDate</text>
+      <line class="uml-sep" x1="0" y1="94" x2="270" y2="94" />
+      <text class="uml-method" x="12" y="112">+ consolidarAnonimo(): Datos</text>
+      <text class="uml-method" x="12" y="130">+ exportarPDF(): Byte[]</text>
+      <text class="uml-method" x="12" y="148">+ exportarExcel(): Byte[]</text>
+    </g>
+
+    <!-- GestorRespaldo -->
+    <g transform="translate(730,560)">
+      <rect class="uml-card" width="310" height="165" rx="8" stroke="#fb7185" />
+      <path d="M0 8a8 8 0 0 1 8-8h294a8 8 0 0 1 8 8v22H0z" fill="#fb7185" />
+      <text class="uml-title" x="12" y="21" fill="#ffffff">GestorRespaldo</text>
+      <line x1="0" y1="30" x2="310" y2="30" stroke="#fb7185" opacity=".45" />
+      <text class="uml-attr" x="12" y="48">- periodicidadHoras: Integer</text>
+      <text class="uml-attr" x="12" y="66">- diasConservacion: Integer</text>
+      <text class="uml-attr" x="12" y="84">- rutaAlmacenamiento: String</text>
+      <line class="uml-sep" x1="0" y1="94" x2="310" y2="94" />
+      <text class="uml-method" x="12" y="112">+ ejecutarCopiaSeguridad(): File</text>
+      <text class="uml-method" x="12" y="130">+ restaurarCopia(f: File): bool</text>
+      <text class="uml-method" x="12" y="148">+ purgarRegistrosVencidos(): int</text>
+    </g>
+
+  </g>
+</svg>
+      <div class="canvas-hint"><span class="hint-desktop">Arrastra para mover · Rueda para acercar</span><span class="hint-touch">Arrastra para mover · Botones + / − para acercar</span></div>
+      <div class="legend" aria-hidden="true">
+        <span><i></i> asociación</span>
+        <span><i class="dashed"></i> discontinua</span>
+        <span><i class="diamond"></i> composición</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="app-footer">
+  <div class="authors">
+    <span>Autores:</span>
+    <strong>Daniel S. Rodríguez</strong><span class="sep">•</span>
+    <strong>Juan D. Montiel</strong><span class="sep">•</span>
+    <strong>Eneider C. Prada</strong>
+  </div>
+  <div class="shortcuts" aria-hidden="true">
+    <span>Atajos</span>
+    <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><span>secciones</span>
+    <kbd>←</kbd><kbd>→</kbd><span>casos</span>
+  </div>
+  <div class="nav-arrows" id="cu-nav-arrows">
+    <button class="nav-btn" type="button" id="btn-prev">← Anterior</button>
+    <button class="nav-btn" type="button" id="btn-next">Siguiente →</button>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+/* ============================================================
+   DATOS DE LOS ONCE CASOS DE USO
+   Fuente: «Casos de uso - UbicaUT.docx».
+   Los flujos alternos solo recogen condiciones descritas o
+   directamente derivadas del comportamiento documentado.
+   ============================================================ */
+const casos = [
+  {
+    id: "CU-01",
+    titulo: "Consultar lugares",
+    grupo: "usuario",
+    badge: "Visitante",
+    actores: "Visitante",
+    actorNota: "El usuario institucional también puede realizarlo por herencia.",
+    funcion: "Permitir que cualquier persona encuentre un lugar del campus y consulte su información.",
+    requisitos: ["RC-01", "RC-02", "RC-03", "RC-04", "RP-08", "RA-04", "RA-09"],
+    relacionados: ["CU-02", "CU-05", "CU-06"],
+    flujo: [
+      { actor: "La persona abre la búsqueda de lugares y escribe el nombre, el código o la categoría.", sistema: "Captura el criterio y busca en el inventario de lugares, tolerando errores de escritura y tildes." },
+      { actor: "Selecciona un lugar de los resultados.", sistema: "Muestra la ficha con bloque, piso, horario, foto y dependencia responsable." },
+      { actor: "Solicita ver el lugar sobre el mapa.", sistema: "Ubica el lugar en el mapa del campus y lo resalta para orientar a la persona." },
+      { actor: "Solicita los servicios más cercanos a su posición.", sistema: "Ubica su posición y lista los servicios del campus más próximos." }
+    ],
+    alternos: [
+      { paso: 1, texto: "Si el criterio no produce coincidencias, el sistema informa que no encontró el lugar y permite corregir la búsqueda." },
+      { paso: 4, texto: "Si no hay posición disponible, el sistema solicita activar la ubicación del dispositivo." }
+    ],
+    nota: "La consulta de servicios cercanos hace parte de este caso; no se reduce a la búsqueda por nombre."
+  },
+  {
+    id: "CU-02",
+    titulo: "Consultar ruta",
+    grupo: "usuario",
+    badge: "Visitante",
+    actores: "Visitante",
+    actorNota: "El usuario institucional también puede realizarlo por herencia.",
+    funcion: "Permitir que la persona llegue a un lugar del campus siguiendo una ruta a pie.",
+    requisitos: ["RC-05", "RC-06", "RC-07", "RC-08", "RC-09", "RP-01", "RP-02", "RP-03", "RP-04", "RP-05", "RP-06", "RP-07", "RA-01", "RA-09"],
+    relacionados: ["CU-01", "CU-03", "CU-04"],
+    flujo: [
+      { actor: "La persona elige el lugar de destino y solicita consultar la ruta.", sistema: "Obtiene la posición del dispositivo y la ajusta al camino peatonal más cercano." },
+      { actor: "Confirma el origen o escanea el código QR de una entrada.", sistema: "Calcula la ruta más corta al destino y excluye los tramos cerrados o afectados por avisos vigentes." },
+      { actor: "El sistema muestra la ruta calculada.", auto: true, sistema: "Dibuja la ruta a pie en el mapa con distancia, tiempo estimado e indicaciones paso a paso en texto." },
+      { actor: "La persona solicita una ruta accesible sin escaleras.", sistema: "Recalcula excluyendo tramos con escaleras y actualiza distancia, tiempo e indicaciones." },
+      { actor: "Activa las indicaciones por voz e inicia el recorrido.", sistema: "Reproduce las indicaciones paso a paso y acompaña el avance sobre el mapa." },
+      { actor: "La persona se aleja del camino trazado.", sistema: "Detecta el desvío y recalcula la ruta desde la nueva posición." }
+    ],
+    alternos: [
+      { paso: 1, texto: "Si no hay señal de ubicación, el sistema pide ubicar el origen manualmente o escanear el código QR de una entrada." },
+      { paso: 4, texto: "Si no existe un trayecto accesible, el sistema lo informa y mantiene la ruta disponible sin prometer accesibilidad." }
+    ],
+    nota: "El documento garantiza el recálculo cuando la persona se aleja; no detalla cada cuánto se actualiza la posición."
+  },
+  {
+    id: "CU-03",
+    titulo: "Consultar avisos",
+    grupo: "usuario",
+    badge: "Visitante",
+    actores: "Visitante",
+    actorNota: "El usuario institucional también puede realizarlo por herencia.",
+    funcion: "Informar sobre eventos, obras y vías cerradas que afectan el campus.",
+    requisitos: ["RC-10", "RP-05", "RP-12", "RA-06"],
+    relacionados: ["CU-02", "CU-07"],
+    flujo: [
+      { actor: "La persona abre la consulta de avisos.", sistema: "Filtra los avisos por fecha de inicio y fin, y conserva solo los vigentes." },
+      { actor: "El sistema presenta el listado de avisos vigentes.", auto: true, sistema: "Muestra cada aviso con su tipo: evento, obra o cierre de vía." },
+      { actor: "Selecciona un aviso del listado.", sistema: "Muestra título, descripción, fechas y el tramo o lugar afectado, y lo señala en el mapa." },
+      { actor: "El sistema aplica los avisos al cálculo de rutas.", auto: true, sistema: "Excluye del cálculo los tramos afectados por una obra o un cierre vigente." }
+    ],
+    alternos: [
+      { paso: 1, texto: "Si no hay avisos vigentes en la fecha consultada, el sistema informa que no hay novedades activas." }
+    ],
+    nota: "Los avisos de obra o cierre vigentes condicionan el cálculo de rutas de CU-02; los avisos de evento no bloquean tramos."
+  },
+  {
+    id: "CU-04",
+    titulo: "Usar sin conexión",
+    grupo: "usuario",
+    badge: "Visitante",
+    actores: "Visitante",
+    actorNota: "El usuario institucional también puede realizarlo por herencia.",
+    funcion: "Permitir consultar el mapa y las fichas de los lugares cuando no hay internet.",
+    requisitos: ["RC-12", "RP-09", "RA-10"],
+    relacionados: ["CU-01", "CU-02"],
+    flujo: [
+      { actor: "La persona solicita descargar el mapa para uso sin conexión.", sistema: "Descarga un paquete con el mapa y las fichas de los lugares, e incluye la fecha de versión." },
+      { actor: "El sistema confirma la descarga.", auto: true, sistema: "Guarda el paquete en el dispositivo e informa la versión y la fecha de generación." },
+      { actor: "La persona pierde la conexión a internet.", sistema: "Detecta la pérdida de conexión y conmuta al paquete almacenado localmente." },
+      { actor: "Consulta el mapa y las fichas de los lugares.", sistema: "Responde con la información guardada, sin depender de la red." }
+    ],
+    alternos: [
+      { paso: 1, texto: "Si la descarga no se completa, el sistema informa el fallo y no reemplaza el paquete que ya estuviera guardado." },
+      { paso: 3, texto: "Si no hay un paquete descargado previamente, el sistema informa que necesita conexión para consultar el mapa y las fichas." }
+    ],
+    nota: "Alcance documentado: sin conexión se garantiza la consulta del mapa y las fichas. El documento no afirma que el cálculo de rutas ni todas las funciones de navegación operen sin internet."
+  },
+  {
+    id: "CU-05",
+    titulo: "Manejar favoritos",
+    grupo: "usuario",
+    badge: "Usuario",
+    actores: "Usuario institucional",
+    actorNota: "Requiere sesión con correo institucional.",
+    funcion: "Permitir que el usuario institucional guarde los lugares que visita con frecuencia.",
+    requisitos: ["RC-11", "RA-08", "RP-11", "RP-14"],
+    relacionados: ["CU-01", "CU-02", "CU-10"],
+    flujo: [
+      { actor: "El usuario institucional abre su lista de favoritos.", sistema: "Verifica que exista una sesión activa con correo institucional; si no la hay, solicita iniciar sesión." },
+      { actor: "Inicia sesión con su correo institucional.", sistema: "Valida la cuenta y habilita la lista personal de favoritos." },
+      { actor: "Agrega un lugar a favoritos.", sistema: "Registra el lugar en la lista del usuario con la fecha en que se agregó." },
+      { actor: "Consulta su lista de favoritos.", sistema: "Lista los lugares guardados con su información básica." },
+      { actor: "Quita un lugar de la lista.", sistema: "Elimina el favorito y actualiza la lista del usuario." },
+      { actor: "Abre la ruta hacia un lugar favorito.", sistema: "Inicia la consulta de ruta con ese lugar como destino." }
+    ],
+    alternos: [
+      { paso: 3, texto: "Si el lugar ya se encuentra en la lista de favoritos, el sistema informa que ya ha sido guardado previamente y no realiza duplicados." }
+    ],
+    nota: "La autenticación con correo institucional es requisito previo. El caso permite gestionar la lista añadiendo, listando, eliminando y navegando a favoritos."
+  },
+  {
+    id: "CU-06",
+    titulo: "Manejar lugares",
+    grupo: "admin",
+    badge: "Admin",
+    actores: "Administrador",
+    actorNota: "Requiere sesión con rol de administrador.",
+    funcion: "Permitir al administrador mantener actualizado el inventario de lugares del campus.",
+    requisitos: ["RA-04", "RP-10", "RP-11", "RC-16"],
+    relacionados: ["CU-01", "CU-08", "CU-09"],
+    flujo: [
+      { actor: "El administrador inicia sesión.", sistema: "Valida las credenciales y el rol de administrador, y habilita la gestión de lugares." },
+      { actor: "Selecciona la opción de ingresar un lugar.", sistema: "Muestra el formulario con nombre, código, categoría, bloque, piso, horario, foto, descripción, dependencia responsable y coordenadas." },
+      { actor: "Digita los datos y confirma guardar.", sistema: "Valida los campos obligatorios y que las coordenadas estén dentro del campus; si todo es correcto, guarda el lugar." },
+      { actor: "Selecciona un lugar existente y elige modificarlo.", sistema: "Muestra los datos actuales del lugar para editarlos." },
+      { actor: "Actualiza los datos y confirma guardar.", sistema: "Aplica las mismas validaciones y guarda los cambios." },
+      { actor: "Selecciona un lugar y elige eliminarlo.", sistema: "Retira el lugar del inventario y actualiza la información del campus." }
+    ],
+    alternos: [
+      { paso: 3, texto: "Si faltan campos obligatorios, el sistema no guarda y señala los campos pendientes." },
+      { paso: 3, texto: "Si las coordenadas están fuera del campus, el sistema no guarda y solicita corregirlas." }
+    ],
+    nota: "El documento exige validar campos obligatorios y coordenadas dentro del campus; no menciona validaciones de duplicidad. El caso cubre ingresar, modificar y eliminar."
+  },
+  {
+    id: "CU-07",
+    titulo: "Manejar avisos",
+    grupo: "admin",
+    badge: "Admin",
+    actores: "Administrador",
+    actorNota: "Requiere sesión con rol de administrador.",
+    funcion: "Permitir al administrador publicar y retirar avisos de eventos, obras y cierres.",
+    requisitos: ["RA-06", "RP-12", "RP-05", "RP-11"],
+    relacionados: ["CU-03"],
+    flujo: [
+      { actor: "El administrador inicia sesión.", sistema: "Valida las credenciales y el rol, y habilita la gestión de avisos." },
+      { actor: "Selecciona la opción de publicar un aviso.", sistema: "Muestra el formulario con título, tipo, descripción, fechas de inicio y fin, y tramo o lugar afectado." },
+      { actor: "Digita los datos y confirma publicar.", sistema: "Valida las fechas y guarda el aviso; programa su activación y retiro según la fecha de inicio y la fecha de fin." },
+      { actor: "El sistema activa y retira los avisos programados.", auto: true, sistema: "Publica el aviso al llegar la fecha de inicio y lo retira al llegar la fecha de fin." },
+      { actor: "Selecciona un aviso y elige modificarlo.", sistema: "Muestra el aviso para editar sus datos y guarda los cambios." },
+      { actor: "Selecciona un aviso y elige retirarlo.", sistema: "Retira el aviso de la consulta y actualiza los tramos afectados." }
+    ],
+    alternos: [
+      { paso: 3, texto: "Si la fecha de fin es anterior a la fecha de inicio, el sistema no guarda y solicita corregir el rango." },
+      { paso: 3, texto: "Si faltan campos obligatorios, el sistema no guarda y los señala." }
+    ],
+    nota: "Un aviso de obra o cierre vigente excluye los tramos afectados del cálculo de rutas. El documento no detalla otras validaciones de publicación."
+  },
+  {
+    id: "CU-08",
+    titulo: "Manejar mapa del campus",
+    grupo: "admin",
+    badge: "Admin",
+    actores: "Administrador",
+    actorNota: "Requiere sesión con rol de administrador.",
+    funcion: "Permitir al administrador registrar y mantener los datos geográficos del campus.",
+    requisitos: ["RA-01", "RA-02", "RA-03", "RA-05", "RP-02", "RP-10", "RP-11"],
+    relacionados: ["CU-02", "CU-06"],
+    flujo: [
+      { actor: "El administrador inicia sesión.", sistema: "Valida las credenciales y el rol, y habilita la edición geográfica del campus." },
+      { actor: "Registra un bloque con su perímetro y sus entradas.", sistema: "Valida la geometría y guarda el bloque con sus entradas." },
+      { actor: "Registra un piso con su plano y lo asocia a un bloque.", sistema: "Guarda el piso y su plano dentro del bloque correspondiente." },
+      { actor: "Registra un tramo peatonal con longitud, superficie y si tiene escaleras o rampa.", sistema: "Valida los datos y guarda el tramo en la red de caminos del campus." },
+      { actor: "El sistema genera los códigos QR de las entradas.", auto: true, sistema: "Genera el código QR de cada entrada registrada y lo deja disponible para su uso." }
+    ],
+    alternos: [
+      { paso: 2, texto: "Si el perímetro no forma un polígono válido, el sistema no guarda y solicita corregirlo." },
+      { paso: 4, texto: "Si faltan la longitud o la superficie, o los valores no son válidos, el sistema no guarda y señala los datos." }
+    ],
+    nota: "El documento no detalla el formato del plano ni el algoritmo de validación geométrica; solo exige registrar perímetros, entradas, pisos y tramos."
+  },
+  {
+    id: "CU-09",
+    titulo: "Generar informes",
+    grupo: "admin",
+    badge: "Admin",
+    actores: "Administrador",
+    actorNota: "Requiere sesión con rol de administrador.",
+    funcion: "Permitir al administrador conocer cómo se usa el sistema y en qué estado está su información.",
+    requisitos: ["RC-13", "RC-14", "RC-15", "RC-16", "RC-17", "RP-13", "RP-11", "RA-09"],
+    relacionados: ["CU-06", "CU-07"],
+    flujo: [
+      { actor: "El administrador inicia sesión.", sistema: "Valida las credenciales y el rol, y habilita la generación de informes." },
+      { actor: "Selecciona el periodo y la categoría del informe.", sistema: "Presenta las categorías: lugares más buscados, rutas consultadas y proporción de rutas accesibles, avisos y estado del inventario de lugares." },
+      { actor: "Confirma la generación del informe.", sistema: "Consolida los registros de uso sin datos personales y muestra el informe del periodo." },
+      { actor: "Elige exportar el informe.", sistema: "Genera el archivo en PDF o en hoja de cálculo y lo descarga." }
+    ],
+    alternos: [
+      { paso: 2, texto: "Si el periodo es inválido, el sistema no genera el informe y solicita corregirlo." },
+      { paso: 3, texto: "Si no hay registros en el periodo seleccionado, el sistema informa que no hay datos para consolidar." }
+    ],
+    nota: "El documento exige consolidar sin datos personales; no detalla el formato exacto de cada categoría de informe."
+  },
+  {
+    id: "CU-10",
+    titulo: "Manejar usuarios",
+    grupo: "admin",
+    badge: "Admin",
+    actores: "Administrador",
+    actorNota: "Requiere sesión con rol de administrador.",
+    funcion: "Permitir al administrador gestionar las cuentas y proteger los datos personales.",
+    requisitos: ["RP-11", "RP-14", "RA-07"],
+    relacionados: ["CU-05"],
+    flujo: [
+      { actor: "El administrador inicia sesión.", sistema: "Valida las credenciales y el rol, y habilita la gestión de cuentas." },
+      { actor: "Registra una cuenta con correo institucional y rol.", sistema: "Valida el dominio institucional, cifra la contraseña y guarda la cuenta con su fecha de creación." },
+      { actor: "Cambia el rol de una cuenta.", sistema: "Actualiza el rol y aplica los permisos correspondientes a la cuenta." },
+      { actor: "Atiende la solicitud de un usuario y elimina sus datos personales.", sistema: "Elimina los datos personales asociados a la cuenta conforme a la solicitud." }
+    ],
+    alternos: [
+      { paso: 2, texto: "Si el correo no pertenece al dominio institucional o faltan datos obligatorios, el sistema no crea la cuenta y lo informa." }
+    ],
+    nota: "El documento no especifica qué datos se conservan tras la eliminación ni el procedimiento mediante el cual el usuario presenta la solicitud. El caso cubre registro, cambio de rol y eliminación de datos."
+  },
+  {
+    id: "CU-11",
+    titulo: "Manejar respaldo y conservación",
+    grupo: "admin",
+    badge: "Admin",
+    actores: "Administrador",
+    actorNota: "Requiere sesión con rol de administrador.",
+    funcion: "Permitir al administrador programar copias de seguridad y definir cuánto tiempo se conservan los registros de uso.",
+    requisitos: ["RA-11", "RA-12", "RP-11"],
+    relacionados: ["CU-09", "CU-10"],
+    flujo: [
+      { actor: "El administrador inicia sesión.", sistema: "Valida las credenciales y el rol, y habilita la configuración de respaldo y conservación." },
+      { actor: "Programa la periodicidad de las copias de seguridad de la base de datos.", sistema: "Guarda la programación y deja activas las copias periódicas." },
+      { actor: "Define el tiempo de conservación de los registros de uso.", sistema: "Guarda el plazo y programa la eliminación de los registros cuando venza." },
+      { actor: "El sistema ejecuta las copias y la depuración programadas.", auto: true, sistema: "Realiza las copias según la periodicidad y borra los registros de uso cuyo plazo de conservación venció." },
+      { actor: "Solicita restaurar una copia de seguridad.", sistema: "Restaura la copia indicada y deja la base de datos en el estado de esa copia." }
+    ],
+    alternos: [
+      { paso: 3, texto: "Si el tiempo de conservación no es válido, el sistema no guarda y solicita corregirlo." },
+      { paso: 5, texto: "Si la copia seleccionada no es válida o está incompleta, el sistema no la restaura e informa el problema." }
+    ],
+    nota: "El documento no detalla la frecuencia mínima, el formato de las copias ni el procedimiento de restauración. El caso cubre programación, conservación y restauración."
+  }
+];
+
+/* ============================================================
+   UTILIDADES Y ESTADO
+   ============================================================ */
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs)) {
+    if (value == null || value === false) continue;
+    if (key === "class") node.className = value;
+    else if (key === "text") node.textContent = value;
+    else node.setAttribute(key, value === true ? "" : String(value));
+  }
+  for (const child of children.flat()) {
+    if (child == null || child === false) continue;
+    node.append(child.nodeType ? child : document.createTextNode(String(child)));
+  }
+  return node;
+}
+
+const byId = new Map(casos.map((caso) => [caso.id, caso]));
+const listEl = $("#cu-list");
+const detailEl = $("#cu-detail");
+const detailScroll = $("#detail-scroll");
+const filterCount = $("#filter-count");
+
+let activeFilter = "todos";
+let selectedId = "CU-01";
+let activeTab = "eventos";
+
+const filteredCasos = () =>
+  activeFilter === "todos" ? casos : casos.filter((caso) => caso.grupo === activeFilter);
+
+const groupAccent = (caso) => (caso.grupo === "admin" ? "var(--amber)" : "var(--sky)");
+
+/* ============================================================
+   LISTA LATERAL Y FILTROS
+   ============================================================ */
+function renderList() {
+  const visibles = filteredCasos();
+  listEl.replaceChildren();
+
+  for (const caso of visibles) {
+    const isActive = caso.id === selectedId;
+    const button = el("button", {
+      class: "cu-item" + (isActive ? " active" : ""),
+      type: "button",
+      role: "option",
+      "aria-selected": String(isActive),
+      "aria-label": `${caso.id} ${caso.titulo}. ${caso.actores}`,
+      title: `${caso.actores} · ${caso.titulo}`
+    });
+    button.style.setProperty("--accent", groupAccent(caso));
+    button.append(
+      el("span", { class: "cu-id", text: caso.id }),
+      el("span", { class: "badge " + caso.grupo, text: caso.badge }),
+      el("span", { class: "cu-title", text: caso.titulo })
+    );
+    button.addEventListener("click", () => selectCaso(caso.id));
+    listEl.append(button);
+  }
+
+  const activo = $(".cu-item.active", listEl);
+  if (activo) {
+    requestAnimationFrame(() => activo.scrollIntoView({ block: "nearest", inline: "nearest" }));
+  }
+  updateNavState();
+}
+
+function updateFilterCount() {
+  const visibles = filteredCasos().length;
+  filterCount.textContent = `${visibles} / ${casos.length}`;
+}
+
+function setFilter(filter) {
+  if (!["todos", "usuario", "admin"].includes(filter)) return;
+  activeFilter = filter;
+
+  const visibles = filteredCasos();
+  if (!visibles.some((caso) => caso.id === selectedId)) {
+    selectedId = visibles[0].id;
+  }
+
+  for (const button of $$(".filter-btn")) {
+    button.setAttribute("aria-pressed", String(button.dataset.filter === filter));
+  }
+  updateFilterCount();
+  renderList();
+  renderDetail();
+  detailScroll.scrollTop = 0;
+}
+
+function selectCaso(id) {
+  if (!byId.has(id)) return;
+  if (!filteredCasos().some((caso) => caso.id === id)) {
+    setFilter("todos");
+  }
+  selectedId = id;
+  renderList();
+  renderDetail();
+  detailScroll.scrollTop = 0;
+}
+
+function stepCaso(delta) {
+  const visibles = filteredCasos();
+  if (!visibles.length) return;
+  let index = visibles.findIndex((caso) => caso.id === selectedId);
+  if (index < 0) index = 0;
+  index = (index + delta + visibles.length) % visibles.length;
+  selectCaso(visibles[index].id);
+}
+
+function updateNavState() {
+  const disabled = filteredCasos().length < 2;
+  $("#btn-prev").disabled = disabled;
+  $("#btn-next").disabled = disabled;
+}
+
+/* ============================================================
+   DETALLE DEL CASO DE USO
+   ============================================================ */
+function metaBlock(label, content, note) {
+  const block = el("div", { class: "meta-block" });
+  block.append(el("span", { class: "meta-label", text: label }), content);
+  if (note) block.append(el("p", { class: "meta-note", text: note }));
+  return block;
+}
+
+function renderDetail() {
+  const caso = byId.get(selectedId);
+  if (!caso) return;
+  detailEl.replaceChildren();
+
+  const audience =
+    caso.actores === "Visitante"
+      ? "Visitante · también usuario institucional por herencia"
+      : caso.actores;
+
+  const kicker = el("div", { class: "case-kicker" },
+    el("span", { class: "case-code", text: caso.id }),
+    el("span", { class: "sep" }),
+    el("span", { class: "case-audience", text: audience })
+  );
+
+  const requisitos = el("div", { class: "chip-row" },
+    caso.requisitos.map((req) => el("span", { class: "chip", text: req }))
+  );
+
+  const relacionados = el("div", { class: "rel-row" });
+  for (const rel of caso.relacionados) {
+    const target = byId.get(rel);
+    const button = el("button", {
+      class: "rel-btn",
+      type: "button",
+      text: rel,
+      title: target ? `${rel} · ${target.titulo}` : rel
+    });
+    button.addEventListener("click", () => selectCaso(rel));
+    relacionados.append(button);
+  }
+
+  const head = el("section", { class: "card case-head" });
+  head.append(
+    kicker,
+    el("h2", { text: caso.titulo }),
+    el("p", { class: "case-purpose", text: caso.funcion }),
+    el("div", { class: "case-meta" },
+      metaBlock("Actores", el("p", { class: "meta-strong", text: caso.actores }), caso.actorNota),
+      metaBlock("Requisitos asociados", requisitos),
+      metaBlock("Casos relacionados", relacionados)
+    )
+  );
+
+  /* Flujo principal */
+  const flowCard = el("section", { class: "card" });
+  const flowHead = el("div", { class: "card-head" },
+    el("h3", { text: "Flujo principal de eventos" }),
+    el("span", { class: "head-note", text: `${caso.flujo.length} pasos · ${caso.id}` })
+  );
+
+  const flowTable = el("table", { class: "flow-table" });
+  const thead = el("thead");
+  thead.append(el("tr", {},
+    el("th", { scope: "col", text: "Evento del actor" }),
+    el("th", { scope: "col", text: "Respuesta del sistema" })
+  ));
+  const tbody = el("tbody");
+
+  caso.flujo.forEach((row, index) => {
+    const tr = el("tr", { class: row.auto ? "auto" : "" });
+    const actorCell = el("td", { class: "actor-cell", "data-label": "Evento del actor" });
+    const stepLine = el("div", { class: "step-line" });
+    stepLine.append(el("span", { class: "step-num", text: `Paso ${index + 1}` }));
+    if (row.auto) stepLine.append(el("span", { class: "auto-pill", text: "Automático" }));
+    actorCell.append(stepLine, el("span", { text: row.actor }));
+    tr.append(
+      actorCell,
+      el("td", { class: "system-cell", "data-label": "Respuesta del sistema", text: row.sistema })
+    );
+    tbody.append(tr);
+  });
+
+  flowTable.append(thead, tbody);
+  flowCard.append(flowHead, flowTable);
+
+  /* Flujos alternos */
+  const altCard = el("section", { class: "card" });
+  const altCount = caso.alternos.length;
+  const altHead = el("div", { class: "card-head amber" },
+    el("h3", { text: "Flujos alternos" }),
+    el("span", { class: "head-note", text: altCount ? `${altCount} condición${altCount === 1 ? "" : "es"} documentada${altCount === 1 ? "" : "s"}` : "Sin flujos alternos documentados" })
+  );
+  altCard.append(altHead);
+
+  if (altCount) {
+    const altTable = el("table", { class: "alt-table" });
+    const altThead = el("thead");
+    altThead.append(el("tr", {},
+      el("th", { scope: "col", text: "Paso" }),
+      el("th", { scope: "col", text: "Condición y respuesta del sistema" })
+    ));
+    const altBody = el("tbody");
+    for (const alt of caso.alternos) {
+      altBody.append(el("tr", {},
+        el("td", {}, el("span", { class: "paso-chip", text: `Paso ${alt.paso}` })),
+        el("td", { "data-label": "Condición y respuesta", text: alt.texto })
+      ));
+    }
+    altTable.append(altThead, altBody);
+    altCard.append(altTable);
+  } else {
+    const empty = el("div", { class: "empty-state" });
+    empty.append(
+      el("span", { class: "mark", text: "—", "aria-hidden": "true" }),
+      el("span", { text: "La documentación no describe flujos alternos adicionales para este caso." })
+    );
+    altCard.append(empty);
+  }
+
+  detailEl.append(head, flowCard, altCard);
+}
+
+
+
+/* ============================================================
+   PESTAÑAS Y TECLADO
+   ============================================================ */
+function switchTab(name) {
+  if (!["eventos", "conceptual", "clases"].includes(name)) return;
+  
+  const currentActive = $$(".view.active")[0];
+  const nextView = $(`#view-${name}`);
+  
+  if (currentActive === nextView) return;
+  
+  activeTab = name;
+
+  for (const tab of $$(".tab")) {
+    const on = tab.dataset.tab === name;
+    tab.setAttribute("aria-selected", String(on));
+    tab.tabIndex = on ? 0 : -1;
+  }
+  
+  // Animación
+  nextView.classList.add("entering");
+  nextView.classList.add("active");
+  nextView.hidden = false;
+  
+  requestAnimationFrame(() => {
+    nextView.classList.remove("entering");
+    currentActive.classList.remove("active");
+    currentActive.hidden = true;
+  });
+
+  $("#cu-nav-arrows").hidden = name !== "eventos";
+  if (name !== "eventos") {
+    requestAnimationFrame(() => {
+      const state = diagrams[name].state;
+      if (state.autoFit) fitDiagram(name);
+    });
+  }
+}
+
+/* ============================================================
+   DIAGRAMAS: VISTAS, ZOOM Y DESPLAZAMIENTO
+   ============================================================ */
+const diagrams = {
+  conceptual: {
+    svgId: "svg-conceptual",
+    groupId: "group-conceptual",
+    descId: "desc-conceptual",
+    menuId: "menu-conceptual",
+    readoutId: "zoom-conceptual",
+    state: { scale: 1, x: 0, y: 0, autoFit: true, viewRect: null },
+    views: [
+      {
+        key: "general",
+        label: "Vista general completa",
+        rect: null,
+        desc: "Diez entidades conceptuales del dominio, sin tipos ni métodos. El diagrama muestra cómo se relacionan el campus, los lugares, las rutas, los avisos, los usuarios y el uso sin conexión."
+      },
+      {
+        key: "geo",
+        label: "1. Núcleo geográfico",
+        rect: { x: 20, y: 20, w: 660, h: 510 },
+        desc: "Un Bloque contiene Pisos y posee Entradas. Cada Piso aloja Lugares; cada Lugar pertenece a un bloque y se ubica en un piso."
+      },
+      {
+        key: "rutas",
+        label: "2. Rutas y avisos",
+        rect: { x: 370, y: 20, w: 1040, h: 520 },
+        desc: "Una Ruta tiene un Lugar como destino y se compone de Tramos. Un Aviso vigente puede afectar Tramos y Lugares; las obras y cierres condicionan el cálculo de rutas."
+      },
+      {
+        key: "usuarios",
+        label: "3. Usuarios y offline",
+        rect: { x: 20, y: 470, w: 1020, h: 250 },
+        desc: "Un Usuario institucional guarda Favoritos, y cada Favorito referencia un Lugar. El PaqueteOffline conserva Lugares y Tramos para la consulta sin conexión."
+      }
+    ]
+  },
+  clases: {
+    svgId: "svg-clases",
+    groupId: "group-clases",
+    descId: "desc-clases",
+    menuId: "menu-clases",
+    readoutId: "zoom-clases",
+    state: { scale: 1, x: 0, y: 0, autoFit: true, viewRect: null },
+    views: [
+      {
+        key: "general",
+        label: "Diagrama general completo",
+        rect: null,
+        desc: "Diez clases UML con atributos privados, tipos de datos, métodos públicos y relaciones de composición y asociación."
+      },
+      {
+        key: "lugar-bloque",
+        label: "Clase: Lugar y Bloque",
+        rect: { x: 10, y: 10, w: 680, h: 300 },
+        desc: "CU-01 usa Lugar.buscarPorTexto() y Lugar.obtenerFicha(); CU-06 usa Lugar.validarCoordenadasCampus() y Lugar.guardar(). Bloque aporta contienePunto(), obtenerPisos() y generarQREntrada() para CU-08."
+      },
+      {
+        key: "ruta-tramo",
+        label: "Clase: Ruta y Tramo",
+        rect: { x: 700, y: 10, w: 430, h: 500 },
+        desc: "CU-02 usa Ruta.calcularRutaOptima(), recalcularSiSeAleja() y generarIndicacionesVoz(). Tramo.esTransitable() y cambiarEstado() sostienen la ruta accesible y el estado de los caminos."
+      },
+      {
+        key: "aviso",
+        label: "Clase: Aviso",
+        rect: { x: 700, y: 10, w: 720, h: 500 },
+        desc: "CU-03 usa Aviso.estaVigente(); CU-07 usa programarVigencia() y afectarTramos() para publicar, modificar y retirar avisos. La asociación discontinua con Tramo expresa los tramos afectados."
+      },
+      {
+        key: "usuario-favorito",
+        label: "Clase: Usuario y Favorito",
+        rect: { x: 10, y: 290, w: 680, h: 230 },
+        desc: "CU-05 usa Usuario.iniciarSesion() y los métodos de Favorito para agregar, listar y eliminar. CU-10 usa cambiarRol() y eliminarDatosPersonales()."
+      },
+      {
+        key: "paquete",
+        label: "Clase: PaqueteOffline",
+        rect: { x: 330, y: 10, w: 420, h: 750 },
+        desc: "CU-04 usa descargarPaquete() y consultarLocal(); verificarConexion() apoya la conmutación al modo sin conexión. La relación discontinua con Lugar indica los lugares empaquetados."
+      },
+      {
+        key: "informe",
+        label: "Clase: Informe y Respaldo",
+        rect: { x: 10, y: 530, w: 1050, h: 230 },
+        desc: "CU-09 usa Informe.consolidarAnonimo() y las exportaciones a PDF y hoja de cálculo. CU-11 usa GestorRespaldo para programar copias, restaurar y purgar registros vencidos. Ambas dependen de Usuario («use»)."
+      }
+    ]
+  }
+};
+
+function setActiveView(name, key) {
+  const menu = document.getElementById(diagrams[name].menuId);
+  for (const button of $$(".view-btn", menu)) {
+    button.classList.toggle("active", button.dataset.view === key);
+  }
+}
+
+function buildMenus() {
+  for (const [name, config] of Object.entries(diagrams)) {
+    const menu = document.getElementById(config.menuId);
+    menu.replaceChildren();
+    config.views.forEach((view, index) => {
+      const button = el("button", {
+        class: "view-btn" + (index === 0 ? " active" : ""),
+        type: "button",
+        text: view.label,
+        "data-view": view.key
+      });
+      button.addEventListener("click", () => focusView(name, view.key));
+      menu.append(button);
+    });
+    const note = document.getElementById(config.descId);
+    if (note) note.textContent = config.views[0].desc;
+  }
+}
+
+function applyTransform(name) {
+  const config = diagrams[name];
+  const group = document.getElementById(config.groupId);
+  if (!group) return;
+  const { scale, x, y } = config.state;
+  group.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${scale.toFixed(4)})`);
+  const readout = document.getElementById(config.readoutId);
+  if (readout) readout.textContent = `${Math.round(scale * 100)}%`;
+}
+
+function fitDiagram(name) {
+  const config = diagrams[name];
+  const svg = document.getElementById(config.svgId);
+  const group = document.getElementById(config.groupId);
+  if (!svg || !group) return;
+
+  const box = svg.getBoundingClientRect();
+  if (box.width < 20 || box.height < 20) return;
+
+  let bbox;
+  try {
+    bbox = group.getBBox();
+  } catch (error) {
+    return;
+  }
+  if (!bbox.width || !bbox.height) return;
+
+  const target = config.state.viewRect || { x: bbox.x, y: bbox.y, w: bbox.width, h: bbox.height };
+  const padding = 34;
+  const maxScale = config.state.viewRect ? 1.45 : 1;
+  // En lienzos estrechos se prioriza la legibilidad sobre el encaje completo: la lectura se completa con arrastre.
+  const minScale = box.width < 640 ? (config.state.viewRect ? 0.62 : 0.7) : 0.22;
+  const scale = Math.max(
+    minScale,
+    Math.min(
+      (box.width - padding * 2) / target.w,
+      (box.height - padding * 2) / target.h,
+      maxScale
+    )
+  );
+
+  config.state.scale = scale;
+  config.state.x = (box.width - target.w * scale) / 2 - target.x * scale;
+  config.state.y = (box.height - target.h * scale) / 2 - target.y * scale;
+  applyTransform(name);
+}
+
+function focusView(name, key) {
+  const config = diagrams[name];
+  const view = config.views.find((item) => item.key === key);
+  if (!view) return;
+
+  config.state.viewRect = view.rect ? { ...view.rect } : null;
+  config.state.autoFit = true;
+  setActiveView(name, key);
+  const desc = document.getElementById(config.descId);
+  if (desc) desc.textContent = view.desc;
+  fitDiagram(name);
+}
+
+function zoomDiagram(name, factor, clientX, clientY) {
+  const config = diagrams[name];
+  const svg = document.getElementById(config.svgId);
+  if (!svg) return;
+
+  const rect = svg.getBoundingClientRect();
+  let cx = rect.width / 2;
+  let cy = rect.height / 2;
+  if (typeof clientX === "number" && typeof clientY === "number") {
+    cx = clientX - rect.left;
+    cy = clientY - rect.top;
+  }
+
+  const before = config.state.scale;
+  const after = Math.min(3, Math.max(0.2, before * factor));
+  if (Math.abs(after - before) < 0.0001) return;
+
+  config.state.x = cx - (cx - config.state.x) * (after / before);
+  config.state.y = cy - (cy - config.state.y) * (after / before);
+  config.state.scale = after;
+  config.state.autoFit = false;
+  applyTransform(name);
+}
+
+function resetDiagram(name) {
+  const config = diagrams[name];
+  config.state.viewRect = null;
+  config.state.autoFit = true;
+  const general = config.views[0];
+  setActiveView(name, general.key);
+  const desc = document.getElementById(config.descId);
+  if (desc) desc.textContent = general.desc;
+  fitDiagram(name);
+}
+
+function setupCanvas(name) {
+  const config = diagrams[name];
+  const canvas = document.getElementById(`canvas-${name}`);
+  const svg = document.getElementById(config.svgId);
+  if (!canvas || !svg) return;
+
+  let dragging = false;
+  let startX = 0;
+  let startY = 0;
+  let originX = 0;
+  let originY = 0;
+  let pointerId = null;
+
+  svg.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    if (event.target.closest(".canvas-toolbar")) return;
+
+    dragging = true;
+    pointerId = event.pointerId;
+    startX = event.clientX;
+    startY = event.clientY;
+    originX = config.state.x;
+    originY = config.state.y;
+    canvas.classList.add("dragging");
+    svg.setPointerCapture(pointerId);
+    event.preventDefault();
+  });
+
+  svg.addEventListener("pointermove", (event) => {
+    if (!dragging || event.pointerId !== pointerId) return;
+    config.state.x = originX + (event.clientX - startX);
+    config.state.y = originY + (event.clientY - startY);
+    config.state.autoFit = false;
+    applyTransform(name);
+  });
+
+  const endDrag = (event) => {
+    if (!dragging) return;
+    dragging = false;
+    canvas.classList.remove("dragging");
+    if (pointerId != null && svg.hasPointerCapture(pointerId)) {
+      svg.releasePointerCapture(pointerId);
+    }
+    pointerId = null;
+    if (event) event.preventDefault();
+  };
+
+  svg.addEventListener("pointerup", endDrag);
+  svg.addEventListener("pointercancel", endDrag);
+
+  canvas.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    zoomDiagram(name, event.deltaY < 0 ? 1.12 : 1 / 1.12, event.clientX, event.clientY);
+  }, { passive: false });
+}
+
+/* ============================================================
+   EVENTOS DE INTERFAZ E INICIALIZACIÓN
+   ============================================================ */
+for (const button of $$(".filter-btn")) {
+  button.addEventListener("click", () => setFilter(button.dataset.filter));
+}
+
+$("#btn-prev").addEventListener("click", () => stepCaso(-1));
+$("#btn-next").addEventListener("click", () => stepCaso(1));
+
+for (const tab of $$(".tab")) {
+  tab.addEventListener("click", () => switchTab(tab.dataset.tab));
+  tab.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    event.preventDefault();
+    const tabs = $$(".tab");
+    const index = tabs.indexOf(tab);
+    const next = tabs[(index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length];
+    next.focus();
+    switchTab(next.dataset.tab);
+  });
+}
+
+for (const button of $$("[data-zoom]")) {
+  button.addEventListener("click", () => {
+    const name = button.dataset.diagram;
+    const action = button.dataset.zoom;
+    if (action === "in") zoomDiagram(name, 1.2);
+    else if (action === "out") zoomDiagram(name, 1 / 1.2);
+    else resetDiagram(name);
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
+  const target = event.target;
+  if (target && target.closest && target.closest("input, textarea, select, [contenteditable='true']")) return;
+
+  if (event.key === "1" || event.key === "2" || event.key === "3") {
+    event.preventDefault();
+    switchTab({ 1: "eventos", 2: "conceptual", 3: "clases" }[event.key]);
+    return;
+  }
+
+  if (activeTab === "eventos" && (event.key === "ArrowRight" || event.key === "ArrowLeft")) {
+    event.preventDefault();
+    stepCaso(event.key === "ArrowRight" ? 1 : -1);
+  }
+});
+
+let resizeTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (activeTab !== "eventos" && diagrams[activeTab].state.autoFit) {
+      fitDiagram(activeTab);
+    }
+  }, 120);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  for (const name of Object.keys(diagrams)) setupCanvas(name);
+  buildMenus();
+  renderList();
+  updateFilterCount();
+  renderDetail();
+  switchTab("eventos");
+});
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => {
+    if (activeTab !== "eventos" && diagrams[activeTab].state.autoFit) {
+      fitDiagram(activeTab);
+    }
+  });
+}
+</script>
+</body>
+</html>
